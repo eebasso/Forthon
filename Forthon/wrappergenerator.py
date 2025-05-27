@@ -73,7 +73,7 @@ class PyWrap(PyWrap_OMPExtension):
         if len(name) < 32:
             return name
         transtable = PyWrap.transtable
-        hashbytes = hashlib.md5(name.encode()).digest()
+        hashbytes = hashlib.md5(name.encode(), usedforsecurity=False).digest()
         hash = ''.join([transtable[d] for d in hashbytes])
         return name[:15] + hash
 

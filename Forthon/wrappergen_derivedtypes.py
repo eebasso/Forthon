@@ -36,7 +36,7 @@ class ForthonDerivedType:
         if len(name) < 32 or not dohash:
             return name
         transtable = ForthonDerivedType.transtable
-        hashbytes = hashlib.md5(name.encode()).digest()
+        hashbytes = hashlib.md5(name.encode(), usedforsecurity=False).digest()
         hash = ''.join([transtable[d] for d in hashbytes])
         return name[:15] + hash
 
