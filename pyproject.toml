@@ -10,7 +10,7 @@ dependencies = ["numpy"]
 authors = [ {name = "David P. Grote", email = "grote1@llnl.gov"}, ]
 description = "Fortran95 wrapper/code development package"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 classifiers = [
         "Programming Language :: Python :: 3",
         "Development Status :: 5 - Production/Stable",
@@ -20,11 +20,11 @@ classifiers = [
         "License :: Free To Use But Restricted",
         "Operating System :: OS Independent",
         "Topic :: Software Development :: Build Tools",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         ]
 
 [tool.setuptools]
