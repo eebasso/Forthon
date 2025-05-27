@@ -1,12 +1,12 @@
 #!/usr/bin/env tcsh
 git pull --tags
 
-python3 -c "import version;version.update()"
-set vvv=`python3 version.py`
+python3 -c "from update_version import update;update()"
+set vvv=`python3 update_version.py`
 
 git log -n 1 --pretty=%h > .commithash
 
-git add docs/index.html Forthon/version.py
+git add Forthon/version.py
 git commit -m "version $vvv"
 git tag $vvv
 git push

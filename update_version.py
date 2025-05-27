@@ -29,11 +29,10 @@ def update(major=False, release=False):
 
     # --- Update the version number in the files.
     updatefile('Forthon/version.py', vvold, vvnew)
-    updatefile('docs/index.html', vvold, vvnew)
 
-    # --- Update the commithash of the release.
-    commithash = subprocess.check_output('git log -n 1 --pretty=%h', stderr=subprocess.STDOUT, shell=True, text=True).strip()
-    updatefile('Forthon/version.py', version.commithash, commithash)
+    # --- Update the gitversion of the release.
+    gitversion = subprocess.check_output('git log -n 1 --pretty=%h', stderr=subprocess.STDOUT, shell=True, text=True).strip()
+    updatefile('Forthon/version.py', version.gitversion, gitversion)
 
 if __name__ == "__main__":
     print(version.version)
