@@ -16,7 +16,7 @@ much more versatile Python language.
 
 ## Installing
 
-Requires python versions 3.8 or higher and the numpy package.
+Requires python versions 3.9 or higher and the numpy package.
 
 To install from the source,
 
