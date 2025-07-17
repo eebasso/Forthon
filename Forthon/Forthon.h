@@ -2262,6 +2262,7 @@ static PyObject *ForthonPackage_varlist(PyObject *_self_,PyObject *args)
 /* ######################################################################### */
 /* # Method list                                                            */
 /* Methods which are callable as attributes of a Forthon object            */
+/* NOTE: VERY IMPORTANT */
 static struct PyMethodDef ForthonPackage_methods[] = {
   {"addvarattr"  ,(PyCFunction)ForthonPackage_addvarattr,1,addvarattr_doc},
   {"allocated"   ,(PyCFunction)ForthonPackage_allocated,1,allocated_doc},
@@ -2459,6 +2460,7 @@ static PyObject *Forthon_repr(ForthonObject *self)
   return s;
 }
 
+/* NOTE: VERY IMPORTANT */
 /* ######################################################################### */
 /* # Package object declaration                                              */
 static PyTypeObject ForthonType = {
