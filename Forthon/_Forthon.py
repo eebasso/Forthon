@@ -4,27 +4,27 @@
 But flies an eagle flight, bold, and forthon, Leaving no tract behind.
 """
 # import all of the neccesary packages
+import copy
+import inspect
+import os
+import pickle
+import re
 import sys
+import types
+import warnings
 import __main__
 
 # --- Only numpy is now supported.
-from numpy import *
+import numpy as np
+
 def gettypecode(x):
     return x.dtype.char
 
-import re
-import os
-import copy
-import warnings
-import pickle
 try:
     from PyPDB import PW, PR
 except ImportError:
     pass
-try:
-    import inspect
-except ImportError:
-    pass
+
 # --- Add line completion capability
 try:
     import readline
@@ -288,18 +288,18 @@ else:
 
 # --- Converts an array of characters into a string.
 def arraytostr(a, strip=true):
-    a = array(a)
-    if len(shape(a)) == 1:
+    a = np.array(a)
+    if len(np.shape(a)) == 1:
         result = a[0]
         # --- This is needed for Python3, where string arrays give
         # --- numpy.bytes_ objects. It needs to be converted to unicode.
-        if isinstance(result, bytes_):
+        if isinstance(result, np.bytes_):
             result = result.decode()
         if strip:
             result = result.strip()
-    elif len(shape(a)) == 2:
+    elif len(np.shape(a)) == 2:
         result = []
-        for i in range(shape(a)[1]):
+        for i in range(np.shape(a)[1]):
             result.append(arraytostr(a[:, i]))
     return result
 
@@ -308,20 +308,20 @@ def arraytostr(a, strip=true):
 builtinint = int
 
 def aint(x):
-    if isinstance(x, ndarray):
+    if isinstance(x, np.ndarray):
         return x.astype('l')
     else:
         return builtinint(x)
 
 # --- Return the nearest integer
 def nint(x):
-    if isinstance(x, ndarray):
-        return where(greater(x, 0), aint(x + 0.5), -aint(abs(x) + 0.5))
+    if isinstance(x, np.ndarray):
+        return np.where(np.greater(x, 0), aint(x + 0.5), -aint(np.abs(x) + 0.5))
     else:
         if x >= 0:
             return int(x + 0.5)
         else:
-            return -int(abs(x) + 0.5)
+            return -int(np.abs(x) + 0.5)
 
 def fones(shape, *args):
     """T
@@ -331,7 +331,7 @@ def fones(shape, *args):
     get the data into the proper order for fortran. It takes the same arguments
     as ones, except for 'order' which is set to F.
     """
-    return ones(shape, order='F', *args)
+    return np.ones(shape, order='F', *args)
 
 def fzeros(shape, *args):
     """
@@ -341,7 +341,7 @@ def fzeros(shape, *args):
     get the data into the proper order for fortran. It takes the same arguments
     as zeros, except for 'order' which is set to F.
     """
-    return zeros(shape, order='F', *args)
+    return np.zeros(shape, order='F', *args)
 
 def doc(f, printit=1):
     """
@@ -413,7 +413,6 @@ def determineoriginatingfile(o):
     introspection is used to find the file name. Note there are cases
     where the file name can not be determined - None is returned.
     """
-    import types
     if isinstance(o, str):
         # --- First, deal with strings
         try:
@@ -484,8 +483,8 @@ def oldgetobjectsize(pkg, grp='', recursive=1):
     # --- Return sizes of shallow objects
     if isinstance(pkg, (int, float)):
         result = 1
-    elif isinstance(pkg, ndarray):
-        result = product(array(shape(pkg)))
+    elif isinstance(pkg, np.ndarray):
+        result = np.prod(np.array(np.shape(pkg)))
     else:
         result = 0
 
@@ -557,8 +556,8 @@ def getobjectsize(pkg, grp='', recursive=1, grouplist=None, verbose=False):
     grouplist.add(id(pkg))
 
     # --- Return size of numpy array
-    if isinstance(pkg, ndarray):
-        return product(array(shape(pkg)))
+    if isinstance(pkg, np.ndarray):
+        return np.prod(np.array(np.shape(pkg)))
 
     # --- The object itself gets count of 1
     result = 1
@@ -596,7 +595,7 @@ def getobjectsize(pkg, grp='', recursive=1, grouplist=None, verbose=False):
         elif isinstance(pkg, dict):
             result += 1  # --- Add one for the key
             vv = pkg[v]
-        elif isinstance(pkg, (ndarray, collections.Sequence)):
+        elif isinstance(pkg, (np.ndarray, collections.Sequence)):
             vv = v
         else:
             try:
@@ -675,41 +674,41 @@ def printgroup(pkg, group='', maxelements=10, sumarrays=0):
             v = pkg.__dict__[vname]
         if v is None:
             print(vname + ' is not allocated')
-        elif not isinstance(v, ndarray):
+        elif not isinstance(v, np.ndarray):
             print(vname + ' = ' + str(v))
         else:
             if gettypecode(v) == 'c':
                 print(vname + ' = "' + str(arraytostr(v)) + '"')
             elif sumarrays:
-                sumv = sum(reshape(v, tuple([product(array(v.shape))])))
+                sumv = sum(reshape(v, tuple([np.prod(np.array(v.shape))])))
                 print('sum(' + vname + ') = ' + str(sumv))
             elif size(v) <= maxelements:
                 print(vname + ' = ' + str(v))
             else:
-                if ndim(v) == 1:
+                if np.ndim(v) == 1:
                     print(vname + ' = ' + str(v[:maxelements])[:-1] + " ...")
                 else:
-                    if shape(v)[0] <= maxelements:
-                        if ndim(v) == 2:
+                    if np.shape(v)[0] <= maxelements:
+                        if np.ndim(v) == 2:
                             print(vname + ' = [' + str(v[:,0]) + "] ...")
-                        elif ndim(v) == 3:
+                        elif np.ndim(v) == 3:
                             print(vname + ' = [[' + str(v[:,0,0]) + "]] ...")
-                        elif ndim(v) == 4:
+                        elif np.ndim(v) == 4:
                             print(vname + ' = [[[' + str(v[:,0,0,0]) + "]]] ...")
-                        elif ndim(v) == 5:
+                        elif np.ndim(v) == 5:
                             print(vname + ' = [[[[' + str(v[:,0,0,0,0]) + "]]]] ...")
-                        elif ndim(v) == 6:
+                        elif np.ndim(v) == 6:
                             print(vname + ' = [[[[[' + str(v[:,0,0,0,0,0]) + "]]]]] ...")
                     else:
-                        if ndim(v) == 2:
+                        if np.ndim(v) == 2:
                             print(vname + ' = [' + str(v[:maxelements,0])[:-1] + " ...")
-                        elif ndim(v) == 3:
+                        elif np.ndim(v) == 3:
                             print(vname + ' = [[' + str(v[:maxelements,0,0])[:-1] + " ...")
-                        elif ndim(v) == 4:
+                        elif np.ndim(v) == 4:
                             print(vname + ' = [[[' + str(v[:maxelements,0,0,0])[:-1] + " ...")
-                        elif ndim(v) == 5:
+                        elif np.ndim(v) == 5:
                             print(vname + ' = [[[[' + str(v[:maxelements,0,0,0,0])[:-1] + " ...")
-                        elif ndim(v) == 6:
+                        elif np.ndim(v) == 6:
                             print(vname + ' = [[[[[' + str(v[:maxelements,0,0,0,0,0])[:-1] + " ...")
 
 ##############################################################################
@@ -760,7 +759,6 @@ def pydumpforthonobject(ff, attr, objname, obj, varsuffix, writtenvars, serial, 
 def pydumppythonvariable(ff, vname, value, varsuffix, verbose):
     """Write out the python variable to the dump file
     """
-    import types
     if isinstance(value, types.FunctionType):
         # --- Write out the source of functions. Note that the source of functions
         # --- typed in interactively is not retrieveable - inspect.getsource
@@ -796,7 +794,7 @@ def pydumppythonvariable(ff, vname, value, varsuffix, verbose):
                 print("could not write python function " + vname)
         return
     # --- Zero length arrays cannot by written out.
-    if isinstance(value, ndarray) and product(array(shape(value))) == 0:
+    if isinstance(value, np.ndarray) and np.prod(np.array(np.shape(value))) == 0:
         return
     # --- Try writing as normal variable.
     try:
@@ -1091,7 +1089,6 @@ def pyrestore(filename=None, fname=None, verbose=0, skip=[], ff=None,
                     print("error with variable " + vname)
 
     # --- User defined Python functions
-    import types
     if 'function' in groups:
         functionlist = groups['function']
         del groups['function']
@@ -1261,13 +1258,13 @@ def pyrestoreforthonobject(obj, ff, gname, vlist, fobjdict, varsuffix, verbose, 
 
         try:
             val = ff.__getattr__(vname + '@' + gpdbname)
-            if not isinstance(val, ndarray) and not doarrays:
+            if not isinstance(val, np.ndarray) and not doarrays:
                 # --- Simple assignment is done for scalars, using the exec command
                 if verbose:
                     print("reading in " + fullname)
                 # doassignment(fullname, val)
                 setattr(attrobj, vname, val)
-            elif isinstance(val, ndarray) and doarrays:
+            elif isinstance(val, np.ndarray) and doarrays:
                 if verbose:
                     print("reading in " + fullname)
                 if varsuffix is None:
