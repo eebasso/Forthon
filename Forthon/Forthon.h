@@ -2291,6 +2291,7 @@ static struct PyMethodDef ForthonPackage_methods[] = {
   {"__setstate__",(PyCFunction)ForthonPackage_setdict,1,setdict_doc},
   {"totmembytes" ,(PyCFunction)ForthonPackage_totmembytes,1,totmembytes_doc},
   {"varlist"     ,(PyCFunction)ForthonPackage_varlist,1,varlist_doc},
+  {"__dir__"     ,(PyCFunction)ForthonPackage_varlist,1,varlist_doc},
   {"getstrides"  ,(PyCFunction)ForthonPackage_getstrides,1,getstrides_doc},
   {"printtypenum"  ,(PyCFunction)ForthonPackage_printtypenum,1,printtypenum_doc},
   {"feenableexcept"  ,(PyCFunction)ForthonPackage_feenableexcept,1,feenableexcept_doc},
