@@ -2260,6 +2260,27 @@ static PyObject *ForthonPackage_varlist(PyObject *_self_,PyObject *args)
 }
 
 /* ######################################################################### */
+static char __dir___doc[] = "Forthon dir() implementation. Returns a list of variables and Forthon methods.";
+static PyObject *ForthonPackage___dir__(PyObject *_self_,PyObject *args)
+{
+  PyObject *result,*star,*name;
+  PyMethodDef *ml;
+  if (!PyArg_ParseTuple(args,"")) return NULL;
+  /* # ForthonPackage_varlist */
+  star = Py_BuildValue("(s)","*");
+  result = ForthonPackage_varlist(_self_,star);
+  Py_DECREF(star);
+  /* # ForthonPackage_methods */
+  ml = getForthonPackage_methods();
+  for (; ml->ml_name != NULL; ml++) {
+    name = Py_BuildValue("s",ml->ml_name);
+    PyList_Append(result,name);
+    Py_DECREF(name);
+  }
+  return result;
+}
+
+/* ######################################################################### */
 /* # Method list                                                            */
 /* Methods which are callable as attributes of a Forthon object            */
 static struct PyMethodDef ForthonPackage_methods[] = {
@@ -2291,7 +2312,7 @@ static struct PyMethodDef ForthonPackage_methods[] = {
   {"__setstate__",(PyCFunction)ForthonPackage_setdict,1,setdict_doc},
   {"totmembytes" ,(PyCFunction)ForthonPackage_totmembytes,1,totmembytes_doc},
   {"varlist"     ,(PyCFunction)ForthonPackage_varlist,1,varlist_doc},
-  {"__dir__"     ,(PyCFunction)ForthonPackage_varlist,1,varlist_doc},
+  {"__dir__"     ,(PyCFunction)ForthonPackage___dir__,1,__dir___doc},
   {"getstrides"  ,(PyCFunction)ForthonPackage_getstrides,1,getstrides_doc},
   {"printtypenum"  ,(PyCFunction)ForthonPackage_printtypenum,1,printtypenum_doc},
   {"feenableexcept"  ,(PyCFunction)ForthonPackage_feenableexcept,1,feenableexcept_doc},
