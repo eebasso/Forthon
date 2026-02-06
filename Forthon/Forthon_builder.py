@@ -13,6 +13,10 @@ from Forthon.compilers import FCompiler
 # --- Get the package name, which is assumed to be the first argument.
 pkg = args.pkgname
 
+print("")
+print(f"Forthon_builder.py pkg={pkg}: start")
+print("")
+
 print("--- Forthon: Building package " + pkg)
 
 # --- Get any extra fortran, C or object files listed.
@@ -69,6 +73,9 @@ verbose        = args.verbose
 with_feenableexcept = args.with_feenableexcept
 writemodules   = args.writemodules
 
+print("")
+print(f"Forthon_builder.py pkg={pkg}: debug: set verbose=True")
+verbose = True
 
 # --- These args require special handling
 
@@ -408,15 +415,26 @@ makefile = open(os.path.join(builddir, f'Makefile.{pkg}'), 'w')
 makefile.write(makefiletext)
 makefile.close()
 
+print("")
+print(f"Forthon_builder.py pkg={pkg}: os.system(make -f Makefile.{pkg} {noprintdirectory})")
+print("")
 # --- Now, execuate the make command.
 os.chdir(builddir)
 m = os.system(f'make -f Makefile.{pkg} {noprintdirectory}')
+print("")
+print(f"Forthon_builder.py pkg={pkg}: check m != 0")
 if m != 0:
     # --- If there was a problem with the make, then quite this too.
     # --- The factor of 256 just selects out the higher of the two bytes
     # --- returned by system. The upper has the error number returned by make.
+    print("")
+    print(f"Forthon_builder.py pkg={pkg}: sys.exit")
+    print("")
     sys.exit(int(m/256))
 os.chdir(upbuilddir)
+
+print("")
+print(f"Forthon_builder.py pkg={pkg}: os.remove {pkg+pkgsuffix}py.so")
 
 # --- Make sure that the shared object is deleted. This is needed since
 # --- setuptools doesn't seem to check if objects passed in are newer
@@ -427,6 +445,9 @@ try:
 except:
     pass
 
+print("")
+print(f"Forthon_builder.py pkg={pkg}: define cfiles and ofiles")
+
 cfiles = [os.path.join(builddir, p) for p in [pkg+'pymodule.c', 'Forthon.c']]
 ofiles = [os.path.join(builddir, p) for p in [fortranroot+osuffix,
                                              pkg+'_p'+osuffix] +
@@ -435,6 +456,9 @@ ofiles = [os.path.join(builddir, p) for p in [fortranroot+osuffix,
 # --- DOS requires an extra argument and include directory to build properly
 if machine == 'win32': sys.argv.append('--compiler=mingw32')
 if machine == 'win32': includedirs+=['/usr/include']
+
+print("")
+print(f"Forthon_builder.py pkg={pkg}: check machine == 'darwin'. machine={machine}")
 
 # --- On darwin machines, the python makefile mucks up the -arch argument.
 # --- This fixes it.
@@ -469,20 +493,39 @@ if machine == 'darwin':
 if sys.platform == 'linux':
     extra_link_args += ['-Wl,-z,lazy']
 
+print("")
+print(f"Forthon_builder.py pkg={pkg}: if not verbose:  Setup {pkg}")
+print("")
+
 if not verbose:
     print("  Setup " + pkg)
+    print("")
+    print(f"Forthon_builder.py pkg={pkg}: sys.stdout=open(os.devnull,'w')")
     sys.stdout = open(os.devnull, 'w')
+
+print("")
+print(f"Forthon_builder.py pkg={pkg}: check with_feenableexpect={with_feenableexcept}")
 
 if with_feenableexcept:
     define_macros.append(('WITH_FEENABLEEXCEPT', 1))
 
+print("")
+print(f"Forthon_builder.py pkg={pkg}: check pkgbase={pkgbase} is None")
+
 if pkgbase is None:
     pkgbase = pkg + pkgsuffix
+
+print("")
+print(f"Forthon_builder.py pkg={pkg}: append define_macros with FORTHON_PKGNAME")
 
 define_macros.append(('FORTHON_PKGNAME', f'"{pkgbase}"'))
 
 package_dir = None
 packages = None
+
+print("")
+print(f"Forthon_builder.py pkg={pkg}: check if not dobuild={dobuild}")
+
 if not dobuild:
     # --- When installing, add the package directory if specified so that the
     # --- other files are installed.
@@ -490,8 +533,18 @@ if not dobuild:
         package_dir = {pkgbase:pkgdir}
         packages = [pkgbase]
 
+print("")
+print(f"Forthon_builder.py pkg={pkg}: define call_setup()")
+
 def call_setup():
+    print("")
+    print(f"Forthon_builder.py pkg={pkg} call_setup(): start")
+    print(f"Forthon_builder.py pkg={pkg} call_setup(): dobuild = {dobuild}")
+    print("")
     if dobuild:
+        print("")
+        print(f"Forthon_builder.py pkg={pkg} call_setup(): begin setuptools.setup")
+        print("")
         # If building, call setup directly
         setuptools.setup(name = pkgbase,
                          packages = packages,
@@ -508,6 +561,9 @@ def call_setup():
                          scripts = scripts,
                         )
     else:
+        print("")
+        print(f"Forthon_builder.py pkg={pkg} call_setup(): write 'setup.py'")
+        print("")
         # If installing, write the setup.py file and activate using pip
         with open('setup.py', 'w') as ff:
             ff.write(f"""import setuptools
@@ -525,8 +581,31 @@ setuptools.setup(name = '{pkgbase}',
                                                      extra_link_args = {extra_link_args})],
                  scripts = {scripts}
                 )""")
+        print("")
+        print(f"Forthon_builder.py pkg={pkg} call_setup(): call pip")
+        print("")
         python = sys.executable or 'python'
         retcode = subprocess.call(f"{python} -m pip install .", shell=True)
 
+    print("")
+    print(f"Forthon_builder.py pkg={pkg} call_setup(): end")
+    print("")
+
+print("")
+print(f"Forthon_builder.py pkg={pkg}: __name__ == __main__")
+
 if __name__ == "__main__":
+
+    print("")
+    print(f"Forthon_builder.py pkg={pkg} __main__: start")
+    print("")
+
     call_setup()
+
+    print("")
+    print(f"Forthon_builder.py pkg={pkg} __main__: end")
+    print("")
+
+print("")
+print(f"Forthon_builder.py pkg={pkg}: end")
+print("")
