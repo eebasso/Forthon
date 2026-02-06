@@ -411,7 +411,7 @@ def processfile(packname, filename, othermacros=[], timeroutines=0):
         except IndexError:
             text = ''
 
-    def processvar(v):
+    def processvar(v: fvars.Fvars):
         # Use implicit typing if variable type was not set.
         if v.type == '':
             v.type = 'real'
