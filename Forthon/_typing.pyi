@@ -21,7 +21,10 @@ is not used, references to types from this module may need to be quoted.
 """
 from _typeshed import MaybeNone
 from typing import Any, Literal, type_check_only
+from numpy import generic, intp
 from numpy.typing import NDArray
+
+__all__ = ["ForthonObject"]
 
 @type_check_only
 class ForthonObject:
@@ -37,7 +40,7 @@ class ForthonObject:
     def deprefix(self) -> None:
         """For each variable in the package, a python object is created which has the same name and same value. For arrays, the new objects points to the same memory location."""
         ...
-    def forceassign(self, var_name: str, array: NDArray, /) -> None:
+    def forceassign(self, var_name: str, array: NDArray[generic], /) -> None:
         """Forces assignment to a dynamic array, resizing it if necessary"""
         ...
     def gallot(self, group_name: str = "*", iverbose: int = 0, /) -> Literal[0, 1]:
@@ -46,7 +49,7 @@ class ForthonObject:
     def gchange(self, group_name: str = "*", iverbose: int = 0, /) -> None:
         """Changes allocation of all dynamic arrays in a group if needed"""
         ...
-    def getdict(self, dict_: dict = {}, /) -> dict[str, Any]:
+    def getdict(self, dict_: dict[str, Any] | None = None, /) -> dict[str, Any]:
         """Builds a dictionary, including every variable in the package. For arrays, the dictionary value points to the same memory location as the fortran. If a dictionary is input, then that one is updated rather then creating a new one."""
         ...
     def getfobject(self) -> int:
@@ -100,10 +103,10 @@ class ForthonObject:
     def reprefix(self) -> None:
         """For each variable in the main dictionary, if there is a package variable with the same name it is assigned to that value. For arrays, the data is copied."""
         ...
-    def setdict(self, dict_: dict, /) -> None:
+    def setdict(self, dict_: dict[str, Any], /) -> None:
         """For each variable in the main dictionary, if there is a package variable with the same name it is assigned to that value. For arrays, the data is copied."""
         ...
-    def __setstate__(self, dict_: dict, /) -> None:
+    def __setstate__(self, dict_: dict[str, Any], /) -> None:
         """For each variable in the main dictionary, if there is a package variable with the same name it is assigned to that value. For arrays, the data is copied."""
         ...
     def totmembytes(self) -> int:
@@ -112,10 +115,10 @@ class ForthonObject:
     def varlist(self, attr_or_group_name: str = "*", /) -> list[str] | MaybeNone:
         """Returns a list of variables having either an attribute or in a group"""
         ...
-    def getstrides(self, array: NDArray, /) -> NDArray:
+    def getstrides(self, array: NDArray[generic], /) -> NDArray[intp]:
         """Returns the strides of the input array. The input must be an array (no lists or tuples)."""
         ...
-    def printtypenum(self, array: NDArray, /) -> None:
+    def printtypenum(self, array: NDArray[generic], /) -> None:
         """Prints the typenum of the array. The input must be an array (no lists or tuples)."""
         ...
     def feenableexcept(self, flag: bool | int, /) -> None:
