@@ -1,17 +1,23 @@
 """
-Forthon type helper
+Typing helpers for Forthon.
 
-This module contains types for compiled objects created by Forthon.
-Similiar to the stdlib `_typeshed`, this module and its types do not
-exist at runtime, but can be used freely in stub (.pyi) files. To use
-it in implementation (.py) files, the following construct must be used:
+This module contains type definitions describing objects created by
+compiled Forthon packages. The contents of this module are intended
+for static type checking only and do not exist at runtime.
+
+Similar to modules like ``_typeshed`` used in the Python standard
+library stubs, the types defined here are available to type checkers
+but are not present in the runtime package.
+
+To use these types in implementation (.py) files, import them only
+during type checking:
 
     import typing
     if typing.TYPE_CHECKING:
         from Forthon._typing import ...
 
-If on Python versions < 3.10 and "from __future__ import annotations"
-is not used, types from this module must be quoted.
+If on Python versions < 3.10 and ``from __future__ import annotations``
+is not used, references to types from this module may need to be quoted.
 """
 from _typeshed import MaybeNone
 from typing import Any, Literal, type_check_only
