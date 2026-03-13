@@ -20,16 +20,16 @@ If on Python versions < 3.10 and ``from __future__ import annotations``
 is not used, references to types from this module may need to be quoted.
 """
 from _typeshed import MaybeNone
-from typing import Any, Literal, type_check_only
+from typing import Any, Literal, Protocol, type_check_only
 from numpy import generic, intp
 from numpy.typing import NDArray
 
 __all__ = ["ForthonObject"]
 
 @type_check_only
-class ForthonObject:
+class ForthonObject(Protocol):
     """
-    Forthon object / package base class.
+    Protocol for compiled Forthon package objects.
     """
     def addvarattr(self, var_name: str, attr: str, /) -> None:
         """Adds an attribute to a variable"""
