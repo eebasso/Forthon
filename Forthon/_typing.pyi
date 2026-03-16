@@ -24,7 +24,7 @@ from __future__ import annotations
 from typing import Any, Literal, Protocol, type_check_only, TYPE_CHECKING
 if TYPE_CHECKING:
     from _typeshed import MaybeNone
-from numpy import generic, intp
+from numpy import intp
 from numpy.typing import NDArray
 
 __all__ = ["ForthonObject"]
@@ -43,7 +43,7 @@ class ForthonObject(Protocol):
     def deprefix(self) -> None:
         """For each variable in the package, a python object is created which has the same name and same value. For arrays, the new objects points to the same memory location."""
         ...
-    def forceassign(self, var_name: str, array: NDArray[generic], /) -> None:
+    def forceassign(self, var_name: str, array: NDArray[Any], /) -> None:
         """Forces assignment to a dynamic array, resizing it if necessary"""
         ...
     def gallot(self, group_name: str = "*", iverbose: int = 0, /) -> Literal[0, 1]:
@@ -118,10 +118,10 @@ class ForthonObject(Protocol):
     def varlist(self, attr_or_group_name: str = "*", /) -> list[str] | MaybeNone:
         """Returns a list of variables having either an attribute or in a group"""
         ...
-    def getstrides(self, array: NDArray[generic], /) -> NDArray[intp]:
+    def getstrides(self, array: NDArray[Any], /) -> NDArray[intp]:
         """Returns the strides of the input array. The input must be an array (no lists or tuples)."""
         ...
-    def printtypenum(self, array: NDArray[generic], /) -> None:
+    def printtypenum(self, array: NDArray[Any], /) -> None:
         """Prints the typenum of the array. The input must be an array (no lists or tuples)."""
         ...
     def feenableexcept(self, flag: bool | int, /) -> None:
