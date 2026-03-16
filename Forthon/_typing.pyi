@@ -19,8 +19,11 @@ during type checking:
 If on Python versions < 3.10 and ``from __future__ import annotations``
 is not used, references to types from this module may need to be quoted.
 """
-from _typeshed import MaybeNone
-from typing import Any, Literal, Protocol, type_check_only
+from __future__ import annotations
+
+from typing import Any, Literal, Protocol, type_check_only, TYPE_CHECKING
+if TYPE_CHECKING:
+    from _typeshed import MaybeNone
 from numpy import generic, intp
 from numpy.typing import NDArray
 
@@ -49,7 +52,7 @@ class ForthonObject(Protocol):
     def gchange(self, group_name: str = "*", iverbose: int = 0, /) -> None:
         """Changes allocation of all dynamic arrays in a group if needed"""
         ...
-    def getdict(self, dict_: dict[str, Any] | None = None, /) -> dict[str, Any]:
+    def getdict(self, dict_: dict[str, Any] = ..., /) -> dict[str, Any]:
         """Builds a dictionary, including every variable in the package. For arrays, the dictionary value points to the same memory location as the fortran. If a dictionary is input, then that one is updated rather then creating a new one."""
         ...
     def getfobject(self) -> int:
