@@ -88,7 +88,7 @@ class ForthonObject(Protocol):
     def gfree(self, group_name: str = "*", /) -> Literal[0, 1]:
         """Frees the memory of all dynamic arrays in a group"""
         ...
-    def gsetdims(self, name: str = "*", iverbose: int = 0, /) -> None:
+    def gsetdims(self, var_name: str = "*", iverbose: int = 0, /) -> None:
         """Sets the dimensions of dynamic arrays in the wrapper database"""
         ...
     def isdynamic(self, var_name: str, /) -> Literal[0, 1]:
