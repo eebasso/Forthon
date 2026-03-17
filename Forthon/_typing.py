@@ -1,5 +1,5 @@
 """
-Typing helpers for Forthon.
+Forthon typing.
 
 This module contains type definitions describing objects created by
 compiled Forthon packages. The contents of this module are intended
@@ -17,7 +17,7 @@ during type checking:
         from Forthon._typing import ...
 
 If on Python versions < 3.10 and ``from __future__ import annotations``
-is not used, references to types from this module may need to be quoted.
+is not used, types from this module may need to be quoted.
 """
 from __future__ import annotations
 
