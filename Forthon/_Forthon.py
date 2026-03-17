@@ -625,10 +625,10 @@ def getgroupsizes(pkg, minsize=1, sortby='sizes'):
     for n in varlist:
         group = pkg.getgroup(n)
         v = pkg.getpyobject(n)
-        groups[group] = groups.get(group, 0) + size(v)
+        groups[group] = groups.get(group, 0) + np.size(v)
 
     if sortby == 'sizes':
-        ii = argsort(list(groups.values()))
+        ii = np.argsort(list(groups.values()))
         keysunsorted = list(groups.keys())
         keys = []
         for i in ii:
@@ -680,9 +680,9 @@ def printgroup(pkg, group='', maxelements=10, sumarrays=0):
             if gettypecode(v) == 'c':
                 print(vname + ' = "' + str(arraytostr(v)) + '"')
             elif sumarrays:
-                sumv = sum(reshape(v, tuple([np.prod(np.array(v.shape))])))
+                sumv = sum(np.reshape(v, tuple([np.prod(np.array(v.shape))])))
                 print('sum(' + vname + ') = ' + str(sumv))
-            elif size(v) <= maxelements:
+            elif np.size(v) <= maxelements:
                 print(vname + ' = ' + str(v))
             else:
                 if np.ndim(v) == 1:
