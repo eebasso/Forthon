@@ -21,15 +21,15 @@ is not used, types from this module may need to be quoted.
 """
 from __future__ import annotations
 
-from typing import Any, Literal, Protocol, type_check_only, TYPE_CHECKING
-if TYPE_CHECKING:
+import typing
+from typing import Any, Literal, Protocol
+if typing.TYPE_CHECKING:
     from _typeshed import MaybeNone
 from numpy import intp
 from numpy.typing import NDArray
 
 __all__ = ["ForthonObject"]
 
-@type_check_only
 class ForthonObject(Protocol):
     """
     Protocol for compiled Forthon package objects.
