@@ -774,10 +774,10 @@ class PyWrap(PyWrap_OMPExtension):
         self.cw('static struct PyMethodDef ' + self.pkgname + '_methods[] = {')
         for f in self.flist:
             if f.function:
-                self.cw('{"' + f.name + '", (PyCFunction)' + self.cname(f.name) + ', 1, ' +
+                self.cw('{"' + f.name + '", (PyCFunction)' + self.cname(f.name) + ', METH_VARARGS, ' +
                         'doc_' + self.cname(f.name) + '}, ')
         for t in self.typelist:
-            self.cw('{"' + t.name + '", (PyCFunction)' + self.cname(t.name) + 'New, 1, ' +
+            self.cw('{"' + t.name + '", (PyCFunction)' + self.cname(t.name) + 'New, METH_VARARGS, ' +
                     '"Creates a new instance of fortran derived type ' + t.name + '"}, ')
         self.cw('{NULL, NULL}};')
         self.cw('')
