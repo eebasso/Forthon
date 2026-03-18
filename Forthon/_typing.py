@@ -3,18 +3,7 @@ Forthon typing.
 
 This module contains type definitions describing objects created by
 compiled Forthon packages. The contents of this module are intended
-for static type checking only and do not exist at runtime.
-
-Similar to modules like ``_typeshed`` used in the Python standard
-library stubs, the types defined here are available to type checkers
-but are not present in the runtime package.
-
-To use these types in implementation (.py) files, import them only
-during type checking:
-
-    import typing
-    if typing.TYPE_CHECKING:
-        from Forthon._typing import ...
+for static type checking only.
 
 If on Python versions < 3.10 and ``from __future__ import annotations``
 is not used, types from this module may need to be quoted.
@@ -94,7 +83,7 @@ class ForthonObject(Protocol):
     def isdynamic(self, var_name: str, /) -> Literal[0, 1]:
         """Checks whether a variable is dynamic."""
         ...
-    def getvartype(self, var_name: str, /) -> str | MaybeNone:
+    def getvartype(self, var_name: str, /) -> str | None:
         """Returns the fortran type of a variable"""
         ...
     def listvar(self, var_name: str, /) -> str | MaybeNone:
