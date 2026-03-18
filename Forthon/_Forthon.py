@@ -1,5 +1,7 @@
 """Python utilities for the Forthon fortran wrapper.
 """
+from __future__ import annotations
+
 """
 But flies an eagle flight, bold, and forthon, Leaving no tract behind.
 """
@@ -13,6 +15,10 @@ import sys
 import types
 import warnings
 import __main__
+from typing import Any
+from Forthon._typing import (
+    ForthonObject as _ForthonObject
+)
 
 # --- Only numpy is now supported.
 import numpy as np
@@ -62,7 +68,7 @@ def forthonobject_constructor(typename, arg=None):
         # --- level package. In this case, just return it since is should
         # --- be restored elsewhere.
         return typecreator
-def pickle_forthonobject(o):
+def pickle_forthonobject(o: _ForthonObject):
     if o.getfobject() == 0:
         # --- For top level Forthon objects (which are package objects
         # --- as opposed to derived type objects) only save the typename.
@@ -92,9 +98,11 @@ def getcurrpkg():
 def setcurrpkg(pkg):
     __main__.__dict__["currpkg"] = pkg
 
+_pkg_dict: dict[str, _ForthonObject | PackageBase]
 _pkg_dict = {}
+_pkg_list: list[str]
 _pkg_list = []
-def registerpackage(pkg, name):
+def registerpackage(pkg: _ForthonObject | PackageBase, name):
     """
     Registers a package so it can be accessed using various global routines.
     """
@@ -530,7 +538,7 @@ def oldgetobjectsize(pkg, grp='', recursive=1):
 
 # --- Get size of an object, recursively including anything inside of it.
 # --- New improved version, though should be tested more
-def getobjectsize(pkg, grp='', recursive=1, grouplist=None, verbose=False):
+def getobjectsize(pkg: _ForthonObject | Any, grp='', recursive=1, grouplist=None, verbose=False):
     """
     Gets the total size of a package or dictionary.
       - pkg: Either a Forthon object, dictionary, or a class instance
@@ -612,7 +620,7 @@ def getobjectsize(pkg, grp='', recursive=1, grouplist=None, verbose=False):
 # --- Keep the old name around
 getgroupsize = getobjectsize
 
-def getgroupsizes(pkg, minsize=1, sortby='sizes'):
+def getgroupsizes(pkg: _ForthonObject, minsize=1, sortby='sizes'):
     """
     Get the sizes of groups in the specified package.
      - pkg: package to list
@@ -649,7 +657,7 @@ def getgroupsizes(pkg, minsize=1, sortby='sizes'):
     print("Total size of allocated arrays", pkg.totmembytes())
 
 # --- Print out all variables in a group
-def printgroup(pkg, group='', maxelements=10, sumarrays=0):
+def printgroup(pkg: _ForthonObject | Any, group='', maxelements=10, sumarrays=0):
     """
     Print out all variables in a group or with an attribute
       - pkg: package name or class instance (where group is ignored)
@@ -713,7 +721,7 @@ def printgroup(pkg, group='', maxelements=10, sumarrays=0):
 
 ##############################################################################
 ##############################################################################
-def pydumpforthonobject(ff, attr, objname, obj, varsuffix, writtenvars, serial, verbose):
+def pydumpforthonobject(ff, attr, objname, obj: _ForthonObject, varsuffix, writtenvars, serial, verbose):
     """Loops over the variables in the Forthon object and writes each out if requested
     All variables are written directly to the datawriter (assuming that it can handle
     arbitrary objects, such as Forthon derived types).
